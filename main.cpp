@@ -86,6 +86,7 @@ public:
             return fail(ec, "accept");
 
         // Read a message
+        send_frame(beast::error_code());
         do_read();
     }
 
@@ -163,10 +164,10 @@ public:
         boost::ignore_unused(bytes_transferred);
         if(ec)
             return fail(ec, "write");
-        buffer_.consume(buffer_.size());
+//        buffer_.consume(buffer_.size());
         t_streamer.expires_from_now(boost::posix_time::seconds(1));
         t_streamer.async_wait(boost::bind(&session::send_frame, this, boost::asio::placeholders::error));
-        count_pack++;
+//        count_pack++;
     }
 
     void on_write( beast::error_code ec, std::size_t bytes_transferred)
@@ -177,20 +178,17 @@ public:
         // Clear the buffer
         buffer_.consume(buffer_.size());
         do_read();
-        if(count_pack == 0) {
-            t_streamer.expires_from_now(boost::posix_time::seconds(1));
-            t_streamer.async_wait(boost::bind(&session::send_frame, this, boost::asio::placeholders::error));
-        }
-        count_pack++;
+//        if(count_pack == 0) {
+//            t_streamer.expires_from_now(boost::posix_time::seconds(1));
+//            t_streamer.async_wait(boost::bind(&session::send_frame, this, boost::asio::placeholders::error));
+//        }
+//        count_pack++;
     }
 
     ~session() {
         std::cout << "destructor session \n" << std::endl << std::flush;
-        destruction = true;
     }
-    bool destruction = false;
-//    bool connection = false;
-    int count_pack = 0;
+//    unsigned long count_pack = 0;
 };
 
 //------------------------------------------------------------------------------
