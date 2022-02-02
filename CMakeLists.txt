@@ -9,6 +9,6 @@ set(THREADS_PREFER_PTHREAD_FLAG ON)
 find_package(Threads REQUIRED)
 INCLUDE_DIRECTORIES( ${Boost_INCLUDE_DIR} )
 
-add_executable(wss-serv main.cpp)
+add_executable(wss-serv main.cpp wss.h wss.cpp)
 
 TARGET_LINK_LIBRARIES( wss-serv LINK_PUBLIC ${Boost_LIBRARIES} Threads::Threads ${Boost_LIBRARIES}  boost_system boost_thread)
