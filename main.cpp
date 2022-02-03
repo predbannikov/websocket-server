@@ -1,4 +1,5 @@
 #include <iostream>
+#include "wsslibConfig.h"
 #include "wss.h"
 
 //------------------------------------------------------------------------------
@@ -9,6 +10,7 @@ int main(int argc, char* argv[])
     if (argc != 4)
     {
         std::cerr <<
+            "WSS Version " << wsslib_VERSION_MAJOR << "." << wsslib_VERSION_MINOR << std::endl <<
             "Usage: websocket-server-async <address> <port> <threads>\n" <<
             "Example:\n" <<
             "    websocket-server-async 0.0.0.0 8080 1\n";

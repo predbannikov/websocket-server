@@ -1,6 +1,14 @@
 cmake_minimum_required(VERSION 3.5)
 
-project(wss-serv LANGUAGES CXX)
+# Disable in-source builds to prevent source tree corruption.
+if(" ${CMAKE_SOURCE_DIR}" STREQUAL " ${CMAKE_BINARY_DIR}")
+  message(FATAL_ERROR "
+FATAL: In-source builds are not allowed.
+       You should create a separate directory for build files.
+")
+endif()
+
+project(wss-serv VERSION 1.0)
 
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
@@ -9,6 +17,25 @@ set(THREADS_PREFER_PTHREAD_FLAG ON)
 find_package(Threads REQUIRED)
 INCLUDE_DIRECTORIES( ${Boost_INCLUDE_DIR} )
 
-add_executable(wss-serv main.cpp wss.h wss.cpp)
+option(USE_LIBWSS "Use castom websocket server library" ON)
 
-TARGET_LINK_LIBRARIES( wss-serv LINK_PUBLIC ${Boost_LIBRARIES} Threads::Threads ${Boost_LIBRARIES}  boost_system boost_thread)
+configure_file(wsslibConfig.h.in wsslibConfig.h)
+
+if(USE_LIBWSS) 
+    add_subdirectory(libwss)
+    list(APPEND EXTRA_LIBS libwss)
+endif()
+
+
+add_executable(wss-serv main.cpp)
+
+
+target_link_libraries( wss-serv LINK_PUBLIC ${EXTRA_LIBS} Threads::Threads ${Boost_LIBRARIES}  boost_system boost_thread)
+
+target_include_directories(wss-serv PUBLIC 
+                            "${PROJECT_BINARY_DIR}"
+                            )
+
+enable_testing()
+
+add_test(NAME Runs COMMAND wss-serv)
