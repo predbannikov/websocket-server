@@ -1,16 +1,17 @@
 #include <iostream>
-#include "wsslibConfig.h"
-#include "wss.h"
+#include "cwss/wss.h"
 
+#include "wsslibConfig.h"
 //------------------------------------------------------------------------------
 
 int main(int argc, char* argv[])
 {
+    exchange::version();
     // Check command line arguments.
     if (argc != 4)
     {
         std::cerr <<
-            "WSS Version " << wsslib_VERSION_MAJOR << "." << wsslib_VERSION_MINOR << std::endl <<
+            "WSS Version " << wssserver_VERSION_MAJOR << "." << wssserver_VERSION_MINOR << std::endl <<
             "Usage: websocket-server-async <address> <port> <threads>\n" <<
             "Example:\n" <<
             "    websocket-server-async 0.0.0.0 8080 1\n";
@@ -36,6 +37,7 @@ int main(int argc, char* argv[])
             ioc.run();
         });
     ioc.run();
+    std::cout << "********" << std::endl;
 
     return EXIT_SUCCESS;
 }

@@ -16,6 +16,8 @@
 #include <thread>
 #include <vector>
 
+#include "wssconfig.h"
+
 namespace exchange {
 
 
@@ -28,6 +30,7 @@ namespace exchange {
 //------------------------------------------------------------------------------
 
 // Report a failure
+void version();
 static void fail(boost::beast::error_code ec, char const* what);
 
 // Echoes back all received WebSocket messages

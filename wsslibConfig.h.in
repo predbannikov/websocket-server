@@ -2,8 +2,8 @@
 #define INCLUDE_GUARD
 
 // the configured options and settings for Tutorial
-#define wsslib_VERSION_MAJOR @wss-serv_VERSION_MAJOR@
-#define wsslib_VERSION_MINOR @wss-serv_VERSION_MINOR@
+#define wssserver_VERSION_MAJOR @wssserver_VERSION_MAJOR@
+#define wssserver_VERSION_MINOR @wssserver_VERSION_MINOR@
 #cmakedefine USE_LIBWSS
 
 #endif // INCLUDE_GUARD

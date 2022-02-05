@@ -219,3 +219,8 @@ void exchange::listener::on_accept(boost::beast::error_code ec, boost::asio::ip:
     counter_conection++;
     do_accept();
 }
+
+void exchange::version()
+{
+    std::cout << "Web socket server version " << CWSS_VERSION_MAJOR << "." << CWSS_VERSION_MINOR << std::endl;
+}
