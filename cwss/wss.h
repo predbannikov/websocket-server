@@ -31,7 +31,7 @@ namespace exchange {
 
 // Report a failure
 void version();
-static void fail(boost::beast::error_code ec, char const* what);
+void fail(boost::beast::error_code ec, char const* what);
 
 // Echoes back all received WebSocket messages
 class session : public std::enable_shared_from_this<session>
