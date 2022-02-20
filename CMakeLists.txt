@@ -51,10 +51,10 @@ configure_file(wsslibConfig.h.in wsslibConfig.h)
 
 #add_subdirectory(cwss)
 
-if(USE_LIBWSS)
-    add_subdirectory(cwss)
-    list(APPEND EXTRA_LIBS cwss)
-endif()
+#if(USE_LIBWSS)
+#    add_subdirectory(cwss)
+#    list(APPEND EXTRA_LIBS cwss)
+#endif()
 
 #target_link_libraries(${PROJECT_NAME}
 #        "${EXTRA_LIBS}"
@@ -71,9 +71,13 @@ find_package(Threads REQUIRED)
 include_directories( ${Boost_INCLUDE_DIR} )
 
 add_executable(websocket client.cpp)
-
 TARGET_LINK_LIBRARIES( websocket LINK_PUBLIC ${Boost_LIBRARIES} Threads::Threads ${Boost_LIBRARIES} boost_system boost_thread)
 
+
+add_library(wss INTERFACE)
+target_include_directories(wss INTERFACE
+    $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
+    )
 
 
 add_executable(${PROJECT_NAME}
@@ -81,10 +85,11 @@ add_executable(${PROJECT_NAME}
     test-server.cpp
     )
 target_link_libraries(${PROJECT_NAME}
+#    INTERFACE
+#        wss
+    LINK_PUBLIC ${Boost_LIBRARIES} Threads::Threads ${Boost_LIBRARIES} boost_system boost_thread
 #    PUBLIC
-        "${EXTRA_LIBS}"
-#    PRIVATE
-#        Qt5::Test
+#        "${EXTRA_LIBS}"
         )
 #target_link_libraries(test2 PRIVATE Qt5::Test)
 #add_executable(test1 test1.cpp)

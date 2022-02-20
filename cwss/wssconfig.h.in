@@ -1,7 +1,0 @@
-#ifndef LIBWSS_WSS_H
-#define LIBWSS_WSS_H
-
-#define CWSS_VERSION_MINOR   @cwss_VERSION_MINOR@
-#define CWSS_VERSION_MAJOR   @cwss_VERSION_MAJOR@
-
-#endif //LIBWSS_WSS_H

@@ -47,3 +47,12 @@ compile_commands.json
 
 # QtCreator local machine specific files for imported projects
 *creator.user*
+
+### CMake template
+CMakeCache.txt
+CMakeFiles
+CMakeScripts
+Makefile
+cmake_install.cmake
+install_manifest.txt
+CTestTestfile.cmake
