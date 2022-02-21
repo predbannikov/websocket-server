@@ -1,8 +1,26 @@
 cmake_minimum_required(VERSION 3.5)
 project(wssserver VERSION 4.5 LANGUAGES CXX)
-#get_directory_property(IS_SUBPROJECT PARENT_DIRECTORY)
+get_directory_property(IS_SUBPROJECT PARENT_DIRECTORY)
 
+###################################################################################################
+##
+##      Опции проекта
+##
+###################################################################################################
 
+if (IS_SUBPROJECT AND NOT DEFINED MYLIB_TESTING)
+    message(STATUS "Mylib не тестируется в режиме подмодуля")
+    set(MYLIB_TESTING OFF)
+endif()
+
+if (IS_SUBPROJECT AND NOT DEFINED MYLIB_DOC)
+    message(STATUS "Автодокументация для Mylib выключена в режиме подмодуля")
+    set(MYLIB_DOC OFF)
+endif()
+
+option(MYLIB_TESTING "Включить модульное тестирование" ON)
+option(MYLIB_COVERAGE "Включить измерение покрытия кода тестами" OFF)
+option(MYLIB_DOC "Включить документирование" ON)
 
 ###################################################################################################
 ##
@@ -34,6 +52,7 @@ if((CMAKE_CXX_COMPILER_ID MATCHES "GNU") OR (CMAKE_CXX_COMPILER_ID MATCHES "Clan
 elseif(CMAKE_CXX_COMPILER_ID MATCHES "MSVC")
     add_compile_options(/W4 /WX)
 endif()
+
 
 #if(NOT CMAKE_CXX_EXTENSIONS)
 #    set(CMAKE_CXX_EXTENSIONS OFF)
@@ -78,8 +97,6 @@ target_link_libraries(run-server
 #foreach(dir ${dirs})
 #  message(STATUS "dir='${dir}'")
 #endforeach()
-
-
 set(CTEST_PARALLEL_LEVEL 2)
 
 enable_testing()

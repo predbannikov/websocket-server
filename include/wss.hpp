@@ -339,7 +339,7 @@ void server_wss::listener::on_accept(boost::beast::error_code ec, boost::asio::i
 
 void server_wss::version()
 {
-//  std::cout << "Web socket server version " << CWSS_VERSION_MAJOR << "." << CWSS_VERSION_MINOR << std::endl;
+  std::cout << "Web socket server version " << wssserver_VERSION_MAJOR << "." << wssserver_VERSION_MINOR << std::endl;
 }
 
 #endif // WSS_H
