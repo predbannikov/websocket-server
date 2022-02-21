@@ -16,7 +16,7 @@
 #include <thread>
 #include <vector>
 
-//#include "wssconfig.h"
+#include "wssserverConfig.h"
 
 namespace server_wss {
 

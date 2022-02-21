@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.5)
 project(wssserver VERSION 4.5 LANGUAGES CXX)
-get_directory_property(IS_SUBPROJECT PARENT_DIRECTORY)
+#get_directory_property(IS_SUBPROJECT PARENT_DIRECTORY)
 
 
 
@@ -38,32 +38,25 @@ endif()
 #if(NOT CMAKE_CXX_EXTENSIONS)
 #    set(CMAKE_CXX_EXTENSIONS OFF)
 #endif()
-#find_package(Qt5Test REQUIRED)
-#set(CMAKE_INCLUDE_CURRENT_DIR ON)
-#set(CMAKE_AUTOMOC ON)
 
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
+file(GLOB_RECURSE LibFiles "include/*.hpp")
+add_custom_target(headers SOURCES ${LibFiles})
+
+
 
 option(USE_LIBWSS "Use custom websocket server library" ON)
-configure_file(wsslibConfig.h.in wsslibConfig.h)
+configure_file(wssserverConfig.h.in wssserverConfig.h)
 
-#add_subdirectory(cwss)
-
-#if(USE_LIBWSS)
-#    add_subdirectory(cwss)
-#    list(APPEND EXTRA_LIBS cwss)
-#endif()
-
-#target_link_libraries(${PROJECT_NAME}
-#        "${EXTRA_LIBS}"
-#    )
-
-#target_include_directories(${PROJECT_NAME}
-#    PUBLIC
-#        ${PROJECT_BINARY_DIR}
-#    )
+add_library(${PROJECT_NAME} INTERFACE)
+target_include_directories(${PROJECT_NAME} INTERFACE
+    $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}>
+    ${PROJECT_BINARY_DIR}
+    ${CMAKE_CURRENT_BINARY_DIR}
+    )
+include_directories(${CMAKE_CURRENT_BINARY_DIR})
 
 find_package( Boost 1.78 COMPONENTS program_options REQUIRED )
 set(THREADS_PREFER_PTHREAD_FLAG ON)
@@ -71,28 +64,14 @@ find_package(Threads REQUIRED)
 include_directories( ${Boost_INCLUDE_DIR} )
 
 add_executable(websocket client.cpp)
-TARGET_LINK_LIBRARIES( websocket LINK_PUBLIC ${Boost_LIBRARIES} Threads::Threads ${Boost_LIBRARIES} boost_system boost_thread)
+TARGET_LINK_LIBRARIES(websocket
+    PRIVATE ${Boost_LIBRARIES} Threads::Threads ${Boost_LIBRARIES} boost_system boost_thread
+)
 
-
-add_library(wss INTERFACE)
-target_include_directories(wss INTERFACE
-    $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
-    )
-
-
-add_executable(${PROJECT_NAME}
-#    EXCLUDE_FROM_ALL
-    test-server.cpp
-    )
-target_link_libraries(${PROJECT_NAME}
-#    INTERFACE
-#        wss
-    LINK_PUBLIC ${Boost_LIBRARIES} Threads::Threads ${Boost_LIBRARIES} boost_system boost_thread
-#    PUBLIC
-#        "${EXTRA_LIBS}"
-        )
-#target_link_libraries(test2 PRIVATE Qt5::Test)
-#add_executable(test1 test1.cpp)
+add_executable(run-server test-server.cpp )
+target_link_libraries(run-server
+    PRIVATE ${Boost_LIBRARIES} Threads::Threads ${Boost_LIBRARIES} boost_system boost_thread
+)
 
 
 #get_property(dirs DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR} PROPERTY INCLUDE_DIRECTORIES)
@@ -106,8 +85,8 @@ set(CTEST_PARALLEL_LEVEL 2)
 enable_testing()
 set(MULTIPLY_TIMEOUT 3)
 
-add_test(Usage wssserver 1)
-add_test(Runs wssserver "0.0.0.0" 43211 1)
+add_test(Usage run-server 1)
+add_test(Runs run-server "0.0.0.0" 43211 1)
 add_test(Out1 websocket "127.0.0.1" 43211)
 add_test(ClientTest websocket )
 
