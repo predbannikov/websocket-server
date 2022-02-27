@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.5)
-project(wssserver VERSION 4.5 LANGUAGES CXX)
+project(wssserver VERSION 1.0 LANGUAGES CXX)
 get_directory_property(IS_SUBPROJECT PARENT_DIRECTORY)
 
 ###################################################################################################
@@ -53,17 +53,30 @@ elseif(CMAKE_CXX_COMPILER_ID MATCHES "MSVC")
     add_compile_options(/W4 /WX)
 endif()
 
-
-#if(NOT CMAKE_CXX_EXTENSIONS)
-#    set(CMAKE_CXX_EXTENSIONS OFF)
-#endif()
+if(NOT CMAKE_CXX_EXTENSIONS)
+    set(CMAKE_CXX_EXTENSIONS OFF)
+endif()
 
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
+
+find_package(Doxygen)
+if (Doxygen_FOUND)
+    if (NOT MYLIB_DOXYGEN_LANGUAGE)
+        set(MYLIB_DOXYGEN_LANGUAGE Russian)
+    endif()
+    message(STATUS "Doxygen documentation will be generated in ${MYLIB_DOXYGEN_LANGUAGE}")
+    configure_file(Doxyfile.in Doxyfile)
+    set(DOXYGEN_IN ${CMAKE_CURRENT_SOURCE_DIR}/../docs/Doxyfile.in)
+    add_custom_target(doc ALL COMMAND ${DOXYGEN_EXECUTABLE} ${CMAKE_CURRENT_BINARY_DIR}/Doxyfile
+    COMMENT "Generating API documentation with Doxygen" VERBATIM
+    )
+
+endif ()
+
 file(GLOB_RECURSE LibFiles "include/*.hpp")
 add_custom_target(headers SOURCES ${LibFiles})
-
 
 
 option(USE_LIBWSS "Use custom websocket server library" ON)
@@ -82,8 +95,8 @@ set(THREADS_PREFER_PTHREAD_FLAG ON)
 find_package(Threads REQUIRED)
 include_directories( ${Boost_INCLUDE_DIR} )
 
-add_executable(websocket client.cpp)
-TARGET_LINK_LIBRARIES(websocket
+add_executable(client client.cpp)
+TARGET_LINK_LIBRARIES(client
     PRIVATE ${Boost_LIBRARIES} Threads::Threads ${Boost_LIBRARIES} boost_system boost_thread
 )
 
@@ -104,8 +117,8 @@ set(MULTIPLY_TIMEOUT 3)
 
 add_test(Usage run-server 1)
 add_test(Runs run-server "0.0.0.0" 43211 1)
-add_test(Out1 websocket "127.0.0.1" 43211)
-add_test(ClientTest websocket )
+add_test(Out1 client "127.0.0.1" 43211)
+add_test(ClientTest client )
 
 set_tests_properties(Runs Usage Out1
     PROPERTIES
